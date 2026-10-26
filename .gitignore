@@ -41,7 +41,7 @@ replay_*.log
 
 # local runtime output
 
-.fabric/
-logs/
-mods/
-config/
+/.fabric/
+/logs/
+/mods/
+/config/
