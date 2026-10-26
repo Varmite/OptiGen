@@ -1,0 +1,11 @@
+{
+	"required": true,
+	"package": "youtube.varmite.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"mixins": [
+		"ChunkStatusTasksMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

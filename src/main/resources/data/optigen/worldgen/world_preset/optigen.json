@@ -1,0 +1,49 @@
+{
+  "dimensions": {
+    "minecraft:overworld": {
+      "type": "minecraft:overworld",
+      "generator": {
+        "type": "optigen:overworld",
+        "biome_source": {
+          "type": "optigen:overworld"
+        },
+        "structure_sets": [
+          "minecraft:strongholds",
+          "minecraft:villages",
+          "minecraft:ruined_portals",
+          "minecraft:desert_pyramids",
+          "minecraft:jungle_temples",
+          "minecraft:swamp_huts",
+          "minecraft:igloos",
+          "minecraft:shipwrecks",
+          "minecraft:buried_treasures"
+        ]
+      }
+    },
+    "minecraft:the_nether": {
+      "type": "minecraft:the_nether",
+      "generator": {
+        "type": "optigen:nether",
+        "biome_source": {
+          "type": "optigen:nether"
+        },
+        "structure_sets": [
+          "minecraft:nether_complexes",
+          "minecraft:ruined_portals"
+        ]
+      }
+    },
+    "minecraft:the_end": {
+      "type": "minecraft:the_end",
+      "generator": {
+        "type": "optigen:end",
+        "biome_source": {
+          "type": "optigen:end"
+        },
+        "structure_sets": [
+          "minecraft:end_cities"
+        ]
+      }
+    }
+  }
+}

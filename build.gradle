@@ -1,0 +1,130 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+	id 'maven-publish'
+}
+
+repositories {
+	// Add repositories to retrieve artifacts from in here.
+	// You should only use this when depending on other mods because
+	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
+	// for more information about repositories.
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
+	}
+}
+
+loom {
+	splitEnvironmentSourceSets()
+
+	mods {
+		"optigen" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
+
+	runs {
+		// Headless world-gen benchmark: ./gradlew runBenchmarkServer [-PbenchRadius=24]
+		// Set level-type in run/benchmark/server.properties to compare OptiGen against vanilla.
+		benchmarkServer {
+			server()
+			name = "Benchmark Server"
+			runDir = "run/benchmark"
+			vmArg "-Doptigen.benchmark=${project.findProperty('benchRadius') ?: 24}"
+			programArg "--nogui"
+		}
+	}
+}
+
+dependencies {
+	// To change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	// Fabric API. This is technically optional, but you probably want it anyway.
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+
+	// Distant Horizons: compiled against and loaded in every dev run, but never bundled into the
+	// OptiGen jar (it stays an optional dependency for players). Opt out with -PnoDH.
+	compileOnly "maven.modrinth:distanthorizons:${project.distant_horizons_version}"
+	if (!project.hasProperty("noDH")) {
+		runtimeOnly "maven.modrinth:distanthorizons:${project.distant_horizons_version}"
+	}
+
+	// Config screen: YACL draws it, Mod Menu lists it. Both optional for players; the config
+	// file itself works without them (and on dedicated servers).
+	compileOnly "maven.modrinth:yacl:${project.yacl_version}"
+	compileOnly "maven.modrinth:modmenu:${project.modmenu_version}"
+	runtimeOnly "maven.modrinth:yacl:${project.yacl_version}"
+	runtimeOnly "maven.modrinth:modmenu:${project.modmenu_version}"
+	runtimeOnly "maven.modrinth:placeholder-api:${project.placeholder_api_version}"
+}
+
+processResources {
+	def version = project.version
+	inputs.property "version", version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": version
+	}
+}
+
+test {
+	useJUnitPlatform()
+	maxHeapSize = "2G"
+	testLogging {
+		showStandardStreams = true
+		exceptionFormat = "full"
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+}
+
+java {
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// if it is present.
+	// If you remove this line, sources will not be generated.
+	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
+
+jar {
+	def projectName = project.name
+	inputs.property "projectName", projectName
+
+	from("LICENSE") {
+		rename { "${it}_$projectName"}
+	}
+}
+
+// configure the maven publication
+publishing {
+	publications {
+		create("mavenJava", MavenPublication) {
+			from components.java
+		}
+	}
+
+	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+	repositories {
+		// Add repositories to publish to here.
+		// Notice: This block does NOT have the same function as the block in the top level.
+		// The repositories here will be used for publishing your artifact, not for
+		// retrieving dependencies.
+	}
+}

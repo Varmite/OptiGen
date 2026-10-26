@@ -1,0 +1,45 @@
+{
+	"schemaVersion": 1,
+	"id": "optigen",
+	"version": "${version}",
+	"name": "OptiGen",
+	"description": "The fastest possible world generator that still looks like Minecraft and can still be beaten. 2D analytic terrain, no caves, trimmed decoration, and native Distant Horizons 3.3 LOD generation.",
+	"authors": [
+		"varmite"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/optigen/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"youtube.varmite.OptiGen"
+		],
+		"client": [
+			"youtube.varmite.client.OptiGenClient"
+		],
+		"modmenu": [
+			"youtube.varmite.client.config.OptiGenModMenu"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"distanthorizons": ">=3.3.0",
+		"modmenu": "*",
+		"yet_another_config_lib_v3": "*"
+	},
+	"breaks": {
+		"distanthorizons": "<3.3.0"
+	},
+	"mixins": [
+		"optigen.mixins.json"
+	]
+}
